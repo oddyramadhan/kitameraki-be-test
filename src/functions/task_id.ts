@@ -13,6 +13,7 @@ import { config } from "../config/config";
 import { successResponse } from "../utils/responseHandler";
 import { errorResponse } from "../utils/errorHandler";
 import { httpSwitchHandler } from "../utils/httpHandler";
+import { Messages } from "../constants/messages";
 
 export async function getTaskByIdHandler(
   request: HttpRequest,
@@ -20,13 +21,13 @@ export async function getTaskByIdHandler(
 ): Promise<HttpResponseInit> {
   const taskId = request.params.id;
   if (!taskId) {
-    return { status: 400, body: "Bad request." };
+    return { status: 400, body: Messages.badRequest };
   }
   try {
     const task = await getTaskById(config.tenantId, taskId);
     const apiResponse = successResponse(task);
     if (!task) {
-      return { status: 404, body: "Task not found." };
+      return { status: 404, body: Messages.notFound };
     }
     return { jsonBody: apiResponse, status: 200 };
   } catch (error) {
@@ -41,7 +42,7 @@ export async function updateTaskHandler(
 ): Promise<HttpResponseInit> {
   const taskId = request.params.id;
   if (!taskId) {
-    return { status: 400, body: "Bad request." };
+    return { status: 400, body: Messages.badRequest };
   }
   const body = await request.json();
   try {
@@ -55,10 +56,10 @@ export async function updateTaskHandler(
       error.body?.code === "NotFound"
     ) {
       context.error(`Task with id '${taskId}' not found.`);
-      return { status: 404, body: `Task not found.` };
+      return { status: 404, body: Messages.notFound };
     }
     context.error(`Failed to update task: ${error}`);
-    return { status: 500, body: "Failed to update task." };
+    return { status: 500, body: Messages.failedUpdate };
   }
 }
 
@@ -68,11 +69,11 @@ export async function deleteTaskHandler(
 ): Promise<HttpResponseInit> {
   const taskId = request.params.id;
   if (!taskId) {
-    return { status: 400, body: "Bad request." };
+    return { status: 400, body: Messages.badRequest };
   }
   try {
     await deleteTask(config.tenantId, taskId);
-    return { status: 200, jsonBody: "Task successfully deleted." };
+    return { status: 204, jsonBody: Messages.successDelete };
   } catch (error) {
     if (
       error.code === 404 ||
@@ -80,10 +81,10 @@ export async function deleteTaskHandler(
       error.body?.code === "NotFound"
     ) {
       context.error(`Task with id '${taskId}' not found.`);
-      return { status: 404, body: `Task not found.` };
+      return { status: 404, body: Messages.notFound };
     }
     context.error(`Failed to delete task: ${error}`);
-    return { status: 500, body: "Failed to delete task." };
+    return { status: 500, body: Messages.failedDelete };
   }
 }
 
