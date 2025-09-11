@@ -3,3 +3,4 @@ import { config } from "../config/config";
 
 export const client = new CosmosClient(config.cosmosConnectionString);
 export const container = client.database(config.dataBaseId).container(config.containerId);
+export const formsContainer = client.database(config.dataBaseId).container(config.formsContainerId);

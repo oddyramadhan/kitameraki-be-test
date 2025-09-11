@@ -72,8 +72,9 @@ export async function deleteTaskHandler(
     return { status: 400, body: Messages.badRequest };
   }
   try {
+    context.log(`Deleting task with id: ${taskId}`);
     await deleteTask(config.tenantId, taskId);
-    return { status: 204, jsonBody: Messages.successDelete };
+    return { status: 204 };
   } catch (error) {
     if (
       error.code === 404 ||

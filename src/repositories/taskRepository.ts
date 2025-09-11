@@ -35,6 +35,7 @@ export async function updateTask(tenantId: string, taskId: string, task: Partial
 
 export async function deleteTask(tenantId: string, taskId: string) {
   await container.item(taskId, tenantId).delete();
+  return;
 }
 
 export async function bulkDeleteTasks(tenantId: string, taskIds: string[]) {
